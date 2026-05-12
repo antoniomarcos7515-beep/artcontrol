@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>ArtControl — Cobranças</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg1: #111118;
+  --bg2: #18181f;
+  --bg3: #1f1f28;
+  --bg4: #26262f;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #f0f0f5;
+  --text2: #9191a4;
+  --text3: #5a5a6e;
+  --accent: #7c6af7;
+  --accent-glow: rgba(124,106,247,0.18);
+  --accent2: #a78bfa;
+  --green: #22d3a0;
+  --green-bg: rgba(34,211,160,0.1);
+  --green-border: rgba(34,211,160,0.2);
+  --amber: #f59e0b;
+  --amber-bg: rgba(245,158,11,0.1);
+  --amber-border: rgba(245,158,11,0.2);
+  --red: #f87171;
+  --red-bg: rgba(248,113,113,0.1);
+  --red-border: rgba(248,113,113,0.2);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --radius-pill: 999px;
+  --blue: #60a5fa;
+  --blue-bg: rgba(96,165,250,0.1);
+  --blue-border: rgba(96,165,250,0.2);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { background: var(--bg); }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  max-width: 430px;
+  margin: 0 auto;
+  padding-bottom: 100px;
+}
+
+/* TOP BAR */
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(10,10,15,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 20px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.topbar-logo { display: flex; align-items: center; gap: 11px; }
+.logo-svg-wrap {
+  width: 38px; height: 38px; flex-shrink: 0;
+  filter: drop-shadow(0 4px 14px rgba(124,106,247,0.45));
+}
+.logo-wordmark {
+  display: flex; flex-direction: column; gap: 0px; line-height: 1;
+}
+.logo-art {
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 17px;
+  letter-spacing: -0.5px; color: #fff;
+}
+.logo-control {
+  font-family: 'Syne', sans-serif; font-weight: 400; font-size: 10px;
+  letter-spacing: 3.5px; text-transform: uppercase;
+  color: var(--accent2); margin-top: 1px;
+}
+.topbar-actions { display: flex; gap: 8px; }
+.icon-btn {
+  width: 36px; height: 36px; border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--text2); font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.18s;
+}
+.icon-btn:active { transform: scale(0.93); background: var(--bg3); }
+
+/* HERO STATS */
+.hero { padding: 24px 20px 8px; }
+.hero-label { font-size: 12px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); margin-bottom: 6px; }
+.hero-amount {
+  font-family: 'Syne', sans-serif; font-size: 42px; font-weight: 800;
+  letter-spacing: -1.5px; color: var(--text); line-height: 1;
+  margin-bottom: 4px;
+}
+.hero-amount .currency { font-size: 22px; font-weight: 500; color: var(--text2); margin-right: 2px; vertical-align: super; }
+.hero-sub { font-size: 13px; color: var(--text3); margin-bottom: 20px; }
+.hero-sub b { color: var(--green); font-weight: 500; }
+
+.stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
+.stat-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px 16px;
+  position: relative; overflow: hidden;
+  animation: fadeUp 0.4s ease both;
+}
+.stat-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  border-radius: 2px 2px 0 0;
+}
+.stat-card.pending::before { background: linear-gradient(90deg, var(--amber), transparent); }
+.stat-card.received::before { background: linear-gradient(90deg, var(--green), transparent); }
+.stat-icon { font-size: 20px; margin-bottom: 8px; }
+.stat-card.pending .stat-icon { color: var(--amber); }
+.stat-card.received .stat-icon { color: var(--green); }
+.stat-label-s { font-size: 11px; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text3); font-weight: 500; margin-bottom: 4px; }
+.stat-val { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
+.stat-card.pending .stat-val { color: var(--amber); }
+.stat-card.received .stat-val { color: var(--green); }
+
+/* SECTION HEADER */
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 24px 20px 12px;
+}
+.section-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: -0.2px; }
+.section-count {
+  font-size: 12px; color: var(--text3);
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius-pill); padding: 3px 10px;
+}
+
+/* CLIENT CARDS */
+.clients-list { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
+.client-card {
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color 0.2s;
+  animation: fadeUp 0.35s ease both;
+}
+.client-card:hover { border-color: var(--border2); }
+.client-card.all-paid { border-color: var(--green-border); }
+
+.client-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; cursor: pointer;
+  user-select: none;
+}
+.avatar-wrap { position: relative; flex-shrink: 0; }
+.avatar {
+  width: 40px; height: 40px; border-radius: 12px;
+  background: linear-gradient(135deg, var(--bg3), var(--bg4));
+  border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
+  color: var(--accent2);
+  letter-spacing: 0.5px;
+}
+.paid-dot {
+  position: absolute; bottom: -2px; right: -2px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--green); border: 2px solid var(--bg1);
+  display: none;
+}
+.client-card.all-paid .paid-dot { display: block; }
+
+.client-info { flex: 1; min-width: 0; }
+.client-name-row { display: flex; align-items: center; gap: 6px; margin-bottom: 2px; }
+.client-name { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); }
+.badge {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.5px;
+  padding: 2px 7px; border-radius: var(--radius-pill);
+}
+.badge.paid { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+.badge.partial { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
+.client-meta { font-size: 12px; color: var(--text3); }
+
+.client-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.client-amount { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--text); }
+.client-amount.zeroed { color: var(--green); }
+.chevron-icon { color: var(--text3); font-size: 12px; transition: transform 0.25s; margin-top: 2px; }
+.chevron-icon.open { transform: rotate(180deg); }
+
+/* PROJECTS LIST */
+.projects-panel {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0.4,0,0.2,1);
+  border-top: 0px solid var(--border);
+}
+.projects-panel.open {
+  max-height: 800px;
+  border-top: 1px solid var(--border);
+}
+
+.project-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.project-item:last-of-type { border-bottom: none; }
+.project-item:hover { background: rgba(255,255,255,0.02); }
+
+.check-circle {
+  width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+  border: 1.5px solid var(--border2);
+  background: var(--bg2);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.2s; font-size: 13px;
+  color: transparent;
+}
+.check-circle:active { transform: scale(0.88); }
+.check-circle.paid {
+  background: var(--green-bg); border-color: var(--green);
+  color: var(--green);
+  box-shadow: 0 0 12px rgba(34,211,160,0.25);
+}
+
+.proj-info { flex: 1; min-width: 0; }
+.proj-name { font-size: 14px; color: var(--text); font-weight: 400; }
+.proj-name.paid { color: var(--text3); text-decoration: line-through; }
+.proj-status { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+.proj-val { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 600; }
+.proj-val.paid { color: var(--green); }
+.proj-val.pending-v { color: var(--text2); }
+
+.del-proj-btn {
+  width: 28px; height: 28px; border-radius: 8px; border: none;
+  background: none; color: var(--text3); font-size: 13px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.del-proj-btn:hover { background: var(--red-bg); color: var(--red); }
+
+/* ADD PROJECT FORM */
+.add-proj-form {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  background: var(--bg2);
+  display: none;
+}
+.projects-panel.open .add-proj-form { display: block; }
+.add-proj-inputs { display: flex; gap: 8px; margin-bottom: 8px; }
+.inp {
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); padding: 9px 12px;
+  font-size: 13px; color: var(--text); font-family: 'DM Sans', sans-serif;
+  outline: none; transition: border-color 0.2s;
+  width: 100%;
+}
+.inp::placeholder { color: var(--text3); }
+.inp:focus { border-color: var(--accent); }
+.inp-val { width: 90px; flex-shrink: 0; }
+.add-proj-btn {
+  width: 100%; padding: 10px;
+  background: linear-gradient(135deg, var(--accent), #5b4fd4);
+  border: none; border-radius: var(--radius-sm);
+  color: #fff; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; letter-spacing: 0.3px;
+  transition: opacity 0.15s, transform 0.12s;
+  box-shadow: 0 4px 16px rgba(124,106,247,0.3);
+}
+.add-proj-btn:active { opacity: 0.85; transform: scale(0.98); }
+
+/* EMPTY STATE */
+.empty-state {
+  text-align: center; padding: 48px 24px;
+  color: var(--text3);
+}
+.empty-icon {
+  width: 72px; height: 72px; border-radius: 20px;
+  background: var(--bg2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; margin: 0 auto 16px; color: var(--text3);
+}
+.empty-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--text2); margin-bottom: 6px; }
+.empty-sub { font-size: 14px; line-height: 1.5; }
+
+/* FAB */
+.fab {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 10px; z-index: 200;
+  background: rgba(10,10,15,0.85); backdrop-filter: blur(20px);
+  border: 1px solid var(--border2); border-radius: var(--radius-pill);
+  padding: 8px 16px;
+}
+.fab-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 18px; border-radius: var(--radius-pill);
+  font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all 0.18s; border: none; letter-spacing: 0.2px;
+}
+.fab-btn.primary {
+  background: linear-gradient(135deg, var(--accent), #5b4fd4);
+  color: #fff; box-shadow: 0 4px 20px rgba(124,106,247,0.4);
+}
+.fab-btn.primary:active { transform: scale(0.95); opacity: 0.9; }
+
+/* MODAL */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+  display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.25s;
+}
+.modal-backdrop.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--bg1); border: 1px solid var(--border2);
+  border-radius: 24px 24px 0 0;
+  padding: 0 0 40px; width: 100%; max-width: 430px;
+  transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.modal-backdrop.open .modal { transform: translateY(0); }
+.modal-handle {
+  width: 40px; height: 4px; border-radius: 2px;
+  background: var(--border2); margin: 12px auto 0;
+}
+.modal-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--border); }
+.modal-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: var(--text); }
+.modal-sub { font-size: 13px; color: var(--text3); margin-top: 3px; }
+.modal-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 14px; }
+.field-label { font-size: 12px; font-weight: 500; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text3); margin-bottom: 6px; }
+.inp-lg {
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); padding: 13px 16px;
+  font-size: 16px; color: var(--text); font-family: 'DM Sans', sans-serif;
+  outline: none; transition: border-color 0.2s; width: 100%;
+}
+.inp-lg::placeholder { color: var(--text3); }
+.inp-lg:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+.modal-actions { display: flex; gap: 10px; margin-top: 4px; }
+.btn-ghost {
+  flex: 1; padding: 13px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); color: var(--text2);
+  font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s;
+}
+.btn-ghost:active { background: var(--bg4); }
+.btn-primary {
+  flex: 2; padding: 13px;
+  background: linear-gradient(135deg, var(--accent), #5b4fd4);
+  border: none; border-radius: var(--radius-sm);
+  color: #fff; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600;
+  cursor: pointer; letter-spacing: 0.3px;
+  box-shadow: 0 4px 20px rgba(124,106,247,0.35);
+  transition: all 0.15s;
+}
+.btn-primary:active { opacity: 0.88; transform: scale(0.98); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.toast {
+  position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: var(--radius-pill); padding: 10px 20px;
+  font-size: 13px; font-weight: 500; color: var(--text);
+  z-index: 400; opacity: 0; pointer-events: none;
+  transition: opacity 0.2s; white-space: nowrap;
+  display: flex; align-items: center; gap: 8px;
+}
+.toast.show { opacity: 1; }
+.toast.success { border-color: var(--green-border); }
+.toast .ti { font-size: 15px; color: var(--green); }
+
+/* REPORT MODAL */
+.report-section { margin-bottom: 20px; }
+.report-section-title {
+  font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--text3); font-weight: 600; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.report-section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+.report-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; border-radius: var(--radius-sm);
+  background: var(--bg2); border: 1px solid var(--border);
+  margin-bottom: 6px;
+}
+.report-row-left { display: flex; align-items: center; gap: 10px; }
+.report-avatar {
+  width: 32px; height: 32px; border-radius: 9px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700;
+  color: var(--accent2); flex-shrink: 0;
+}
+.report-client-name { font-size: 14px; font-weight: 500; color: var(--text); }
+.report-client-sub { font-size: 11px; color: var(--text3); margin-top: 1px; }
+.report-val { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; }
+.report-val.green { color: var(--green); }
+.report-val.amber { color: var(--amber); }
+.report-val.muted { color: var(--text3); }
+
+.progress-wrap { margin-bottom: 20px; }
+.progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text3); margin-bottom: 6px; }
+.progress-bar-bg {
+  height: 8px; border-radius: 99px; background: var(--bg3);
+  border: 1px solid var(--border); overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%; border-radius: 99px;
+  background: linear-gradient(90deg, var(--green), #16a37a);
+  transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+
+.big-stat-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+.big-stat {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 12px 10px; text-align: center;
+}
+.big-stat-val { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--text); }
+.big-stat-lbl { font-size: 10px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text3); margin-top: 3px; }
+
+.modal-report { max-height: 82vh; display: flex; flex-direction: column; }
+.modal-report .modal-body { overflow-y: auto; flex: 1; padding-bottom: 24px; }
+.modal-report .modal-body::-webkit-scrollbar { width: 3px; }
+.modal-report .modal-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.icon-btn.active { background: var(--accent-glow); border-color: var(--accent); color: var(--accent2); }
+
+/* FILTER TABS */
+.filter-tabs { display: flex; gap: 4px; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-pill); padding: 3px; }
+.filter-tab {
+  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600;
+  padding: 5px 14px; border-radius: var(--radius-pill); border: none;
+  background: none; color: var(--text3); cursor: pointer; transition: all 0.18s;
+  white-space: nowrap;
+}
+.filter-tab.active { background: var(--accent); color: #fff; box-shadow: 0 2px 10px rgba(124,106,247,0.35); }
+
+/* CLIENT MENU BTN */
+.client-menu-btn {
+  width: 30px; height: 30px; border-radius: 8px; border: none;
+  background: none; color: var(--text3); font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0; transition: all 0.15s;
+}
+.client-menu-btn:hover { background: var(--bg3); color: var(--text2); }
+.client-menu-btn:active { transform: scale(0.88); }
+
+/* CONTEXT SHEET */
+.ctx-backdrop {
+  position: fixed; inset: 0; z-index: 350;
+  background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+  display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.22s;
+}
+.ctx-backdrop.open { opacity: 1; pointer-events: all; }
+.ctx-sheet {
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 22px 22px 0 0; width: 100%; max-width: 430px;
+  padding: 0 0 36px;
+  transform: translateY(100%);
+  transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+}
+.ctx-backdrop.open .ctx-sheet { transform: translateY(0); }
+.ctx-handle { width: 36px; height: 4px; border-radius: 2px; background: var(--border2); margin: 12px auto 0; }
+.ctx-client-info { display: flex; align-items: center; gap: 12px; padding: 18px 20px 14px; border-bottom: 1px solid var(--border); }
+.ctx-avatar { width: 44px; height: 44px; border-radius: 13px; background: linear-gradient(135deg, var(--bg3), var(--bg4)); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--accent2); flex-shrink: 0; }
+.ctx-client-name { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--text); }
+.ctx-client-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+.ctx-options { padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; }
+.ctx-option { display: flex; align-items: center; gap: 14px; padding: 14px 12px; border-radius: var(--radius-sm); cursor: pointer; border: none; background: none; width: 100%; text-align: left; transition: background 0.15s; }
+.ctx-option:hover { background: var(--bg3); }
+.ctx-option:active { background: var(--bg4); }
+.ctx-opt-icon { width: 38px; height: 38px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.ctx-opt-icon.edit { background: var(--accent-glow); color: var(--accent2); border: 1px solid rgba(124,106,247,0.2); }
+.ctx-opt-icon.del { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+.ctx-opt-label { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); }
+.ctx-opt-sub { font-size: 12px; color: var(--text3); margin-top: 1px; }
+.ctx-cancel { margin: 0 12px; padding: 13px; border-radius: var(--radius-sm); background: var(--bg3); border: 1px solid var(--border2); color: var(--text2); font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; width: calc(100% - 24px); transition: background 0.15s; }
+.ctx-cancel:hover { background: var(--bg4); }
+
+/* EMPTY PENDING */
+.empty-pending { text-align: center; padding: 40px 24px; color: var(--text3); }
+.empty-pending-icon { font-size: 36px; margin-bottom: 12px; }
+.empty-pending-title { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; color: var(--green); margin-bottom: 6px; }
+.empty-pending-sub { font-size: 13px; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast">
+  <i class="fa-solid fa-circle-check" style="color:var(--green)"></i>
+  <span id="toast-msg">Salvo!</span>
+</div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <div class="logo-svg-wrap">
+      <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bg-grad" x1="0" y1="0" x2="38" y2="38" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#7c6af7"/>
+            <stop offset="100%" stop-color="#4f3fc2"/>
+          </linearGradient>
+          <linearGradient id="stroke-grad" x1="4" y1="28" x2="30" y2="8" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#22d3a0"/>
+            <stop offset="100%" stop-color="#a78bfa"/>
+          </linearGradient>
+          <linearGradient id="dot-grad" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0%" stop-color="#f59e0b"/>
+            <stop offset="100%" stop-color="#f87171"/>
+          </linearGradient>
+        </defs>
+        <!-- Background rounded square -->
+        <rect width="38" height="38" rx="11" fill="url(#bg-grad)"/>
+        <!-- Subtle inner glow ring -->
+        <rect x="0.5" y="0.5" width="37" height="37" rx="10.5" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+        <!-- Brush/pen diagonal stroke — main icon element -->
+        <path d="M10 27 Q13 20 19 14 Q23 10 28 9" stroke="url(#stroke-grad)" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+        <!-- Small accent dots representing art palette colors -->
+        <circle cx="10.5" cy="26.5" r="2.8" fill="#22d3a0" opacity="0.9"/>
+        <circle cx="28" cy="9" r="2.2" fill="#a78bfa" opacity="0.95"/>
+        <!-- Currency / control tick mark -->
+        <path d="M22 22 L25.5 18.5 L29 22" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.7"/>
+        <!-- Small decorative dot cluster -->
+        <circle cx="15" cy="25" r="1.2" fill="rgba(255,255,255,0.35)"/>
+        <circle cx="24" cy="13" r="1" fill="rgba(255,255,255,0.3)"/>
+      </svg>
+    </div>
+    <div class="logo-wordmark">
+      <span class="logo-art">Art<span style="color:var(--accent2)">Control</span></span>
+      <span class="logo-control">Cobranças</span>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <button class="icon-btn" id="btn-report" title="Relatório">
+      <i class="fa-solid fa-chart-bar"></i>
+    </button>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">Total a receber</div>
+  <div class="hero-amount"><span class="currency">R$</span><span id="hero-val">0,00</span></div>
+  <div class="hero-sub" id="hero-sub">—</div>
+  <div class="stats-row">
+    <div class="stat-card pending">
+      <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+      <div class="stat-label-s">Pendente</div>
+      <div class="stat-val" id="stat-pending">R$ 0,00</div>
+    </div>
+    <div class="stat-card received">
+      <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+      <div class="stat-label-s">Recebido</div>
+      <div class="stat-val" id="stat-received">R$ 0,00</div>
+    </div>
+  </div>
+</div>
+
+<!-- CLIENTS -->
+<div class="section-header">
+  <div class="section-title">Clientes</div>
+  <div class="filter-tabs" id="filter-tabs">
+    <button class="filter-tab active" data-filter="pending">Pendentes</button>
+    <button class="filter-tab" data-filter="all">Todos</button>
+  </div>
+</div>
+<div class="clients-list" id="clients-list"></div>
+
+<!-- FAB -->
+<div class="fab">
+  <button class="fab-btn primary" id="btn-add-client">
+    <i class="fa-solid fa-user-plus" style="font-size:15px"></i> Novo Cliente
+  </button>
+</div>
+
+<!-- MODAL ADD CLIENT -->
+<div class="modal-backdrop" id="modal-client">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title">Novo Cliente</div>
+      <div class="modal-sub">Adicione um cliente para gerenciar cobranças</div>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div class="field-label">Nome do cliente</div>
+        <input class="inp-lg" id="inp-client-name" placeholder="Ex: Marcos Oliveira" maxlength="50"/>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-ghost" id="cancel-client">Cancelar</button>
+        <button class="btn-primary" id="confirm-client"><i class="fa-solid fa-plus"></i> Adicionar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDIT CLIENT -->
+<div class="modal-backdrop" id="modal-edit-client">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:36px;height:36px;border-radius:10px;background:var(--accent-glow);border:1px solid rgba(124,106,247,0.25);display:flex;align-items:center;justify-content:center;color:var(--accent2);font-size:16px">
+          <i class="fa-solid fa-pen"></i>
+        </div>
+        <div>
+          <div class="modal-title">Editar Cliente</div>
+          <div class="modal-sub">Altere o nome do cliente</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div class="field-label">Novo nome</div>
+        <input class="inp-lg" id="inp-edit-name" placeholder="Nome do cliente" maxlength="50"/>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-ghost" id="cancel-edit-client">Cancelar</button>
+        <button class="btn-primary" id="confirm-edit-client"><i class="fa-solid fa-check"></i> Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTEXT MENU SHEET -->
+<div class="ctx-backdrop" id="ctx-menu">
+  <div class="ctx-sheet">
+    <div class="ctx-handle"></div>
+    <div class="ctx-client-info">
+      <div class="ctx-avatar" id="ctx-avatar">M</div>
+      <div>
+        <div class="ctx-client-name" id="ctx-name">—</div>
+        <div class="ctx-client-sub" id="ctx-sub">—</div>
+      </div>
+    </div>
+    <div class="ctx-options">
+      <button class="ctx-option" id="ctx-edit">
+        <div class="ctx-opt-icon edit"><i class="fa-solid fa-pen-to-square"></i></div>
+        <div>
+          <div class="ctx-opt-label">Editar nome</div>
+          <div class="ctx-opt-sub">Alterar o nome deste cliente</div>
+        </div>
+      </button>
+      <button class="ctx-option" id="ctx-delete">
+        <div class="ctx-opt-icon del"><i class="fa-solid fa-trash"></i></div>
+        <div>
+          <div class="ctx-opt-label" style="color:var(--red)">Excluir cliente</div>
+          <div class="ctx-opt-sub">Remove o cliente e todos os projetos</div>
+        </div>
+      </button>
+    </div>
+    <button class="ctx-cancel" id="ctx-cancel">Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL REPORT -->
+<div class="modal-backdrop" id="modal-report">
+  <div class="modal modal-report">
+    <div class="modal-handle"></div>
+    <div class="modal-header" style="display:flex;align-items:center;gap:12px">
+      <div style="width:38px;height:38px;border-radius:11px;background:var(--blue-bg);border:1px solid var(--blue-border);display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:17px;flex-shrink:0">
+        <i class="fa-solid fa-chart-bar"></i>
+      </div>
+      <div>
+        <div class="modal-title">Relatório</div>
+        <div class="modal-sub">ArtControl · Resumo financeiro</div>
+      </div>
+    </div>
+    <div class="modal-body" id="report-body">
+    </div>
+  </div>
+</div>
+
+<script>
+let DB = JSON.parse(localStorage.getItem('ft_v3') || 'null') || {
+  clients: [
+    { id: 1, name: 'Marcos', open: true, projects: [
+      { id: 1, name: 'Arte 1', value: 30, paid: false },
+      { id: 2, name: 'Arte 2', value: 25, paid: false }
+    ]}
+  ],
+  nextCid: 2, nextPid: 3
+};
+
+function save() { try { localStorage.setItem('ft_v3', JSON.stringify(DB)); } catch(e){} }
+
+function fmt(v) {
+  return 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+function fmtShort(v) {
+  return v.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+function initials(n) {
+  return n.trim().split(' ').slice(0,2).map(w=>w[0].toUpperCase()).join('');
+}
+
+function calcTotals() {
+  let pending = 0, received = 0;
+  DB.clients.forEach(c => c.projects.forEach(p => { p.paid ? received+=p.value : pending+=p.value; }));
+  return {pending, received, total: pending+received};
+}
+
+function clientStats(c) {
+  const total = c.projects.reduce((s,p)=>s+p.value,0);
+  const paid = c.projects.reduce((s,p)=>p.paid?s+p.value:s,0);
+  const paidCount = c.projects.filter(p=>p.paid).length;
+  const allPaid = c.projects.length > 0 && paidCount === c.projects.length;
+  const partial = paidCount > 0 && !allPaid;
+  return {total, paid, pending: total-paid, allPaid, partial, count: c.projects.length};
+}
+
+function showToast(msg, isSuccess=true) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.className = 'toast' + (isSuccess?' success show':' show');
+  setTimeout(()=>{ t.className='toast'+(isSuccess?' success':''); }, 2200);
+}
+
+function render() {
+  const {pending, received, total} = calcTotals();
+  document.getElementById('hero-val').textContent = fmtShort(pending);
+
+  const totalClients = DB.clients.length;
+  const totalProj = DB.clients.reduce((s,c)=>s+c.projects.length,0);
+  const paidProj = DB.clients.reduce((s,c)=>s+c.projects.filter(p=>p.paid).length,0);
+  const heroSub = document.getElementById('hero-sub');
+  if (total === 0) {
+    heroSub.innerHTML = 'Nenhum projeto cadastrado ainda';
+  } else {
+    heroSub.innerHTML = `<b>${fmt(received)}</b> recebido de ${fmt(total)} total`;
+  }
+
+  document.getElementById('stat-pending').textContent = fmt(pending);
+  document.getElementById('stat-received').textContent = fmt(received);
+  document.getElementById('client-count').textContent = `${totalClients} ${totalClients===1?'cliente':'clientes'}`;
+
+  // apply filter
+  const activeFilter = document.querySelector('.filter-tab.active')?.dataset.filter || 'pending';
+  const visibleClients = activeFilter === 'pending'
+    ? DB.clients.filter(c => c.projects.some(p => !p.paid))
+    : DB.clients;
+
+  const list = document.getElementById('clients-list');
+
+  if (DB.clients.length === 0) {
+    list.innerHTML = `<div class="empty-state">
+      <div class="empty-icon"><i class="fa-solid fa-users"></i></div>
+      <div class="empty-title">Nenhum cliente</div>
+      <div class="empty-sub">Toque em "Novo Cliente" para começar a gerenciar suas cobranças</div>
+    </div>`;
+    return;
+  }
+
+  if (visibleClients.length === 0 && activeFilter === 'pending') {
+    list.innerHTML = `<div class="empty-pending">
+      <div class="empty-pending-icon">🎉</div>
+      <div class="empty-pending-title">Tudo em dia!</div>
+      <div class="empty-pending-sub">Nenhum cliente com pagamento pendente.<br>Você está em dia com todos!</div>
+    </div>`;
+    return;
+  }
+
+  list.innerHTML = '';
+  visibleClients.forEach((client, idx) => {
+    const s = clientStats(client);
+    const card = document.createElement('div');
+    card.className = 'client-card' + (s.allPaid?' all-paid':'');
+    card.style.animationDelay = (idx*0.05)+'s';
+
+    let badge = '';
+    if (s.allPaid) badge = '<span class="badge paid"><i class="fa-solid fa-check"></i> Pago</span>';
+    else if (s.partial) badge = '<span class="badge partial"><i class="fa-solid fa-circle-half-stroke"></i> Parcial</span>';
+
+    const amountClass = s.pending===0&&s.count>0 ? 'zeroed' : '';
+
+    card.innerHTML = `
+      <div class="client-header" data-cid="${client.id}">
+        <div class="avatar-wrap">
+          <div class="avatar">${initials(client.name)}</div>
+          <div class="paid-dot"></div>
+        </div>
+        <div class="client-info">
+          <div class="client-name-row">
+            <span class="client-name">${client.name}</span>
+            ${badge}
+          </div>
+          <div class="client-meta">${s.count} ${s.count===1?'projeto':'projetos'} · ${s.paidCount||0} pago${(s.paidCount||0)!==1?'s':''}</div>
+        </div>
+        <div class="client-right" style="flex-direction:row;align-items:center;gap:6px">
+          <div class="client-amount ${amountClass}" style="font-size:14px">${s.pending===0&&s.count>0?'<i class="fa-solid fa-check" style="color:var(--green);font-size:16px"></i>':fmtShort(s.pending)}</div>
+          <button class="client-menu-btn" data-menu="${client.id}" title="Opções"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+          <i class="fa-solid fa-chevron-down chevron-icon ${client.open?'open':''}" style="font-size:11px"></i>
+        </div>
+      </div>
+      <div class="projects-panel ${client.open?'open':''}" id="panel-${client.id}">
+        ${s.count===0?'<div style="padding:16px;text-align:center;color:var(--text3);font-size:13px">Nenhum projeto. Adicione abaixo ↓</div>':''}
+        ${client.projects.map(p=>`
+          <div class="project-item">
+            <div class="check-circle ${p.paid?'paid':''}" data-toggle="${p.id}" data-cid="${client.id}">
+              <i class="fa-solid fa-check"></i>
+            </div>
+            <div class="proj-info">
+              <div class="proj-name ${p.paid?'paid':''}">${p.name}</div>
+              <div class="proj-status">${p.paid?'✓ Recebido':'Aguardando pagamento'}</div>
+            </div>
+            <div class="proj-val ${p.paid?'paid':'pending-v'}">${fmtShort(p.value)}</div>
+            <button class="del-proj-btn" data-delp="${p.id}" data-cid="${client.id}" title="Remover"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+        `).join('')}
+        <div class="add-proj-form">
+          <div class="add-proj-inputs">
+            <input class="inp" placeholder="Nome do projeto" id="pn-${client.id}" maxlength="40" style="flex:1"/>
+            <input class="inp inp-val" placeholder="R$ 0,00" id="pv-${client.id}" type="number" min="0" step="0.01"/>
+          </div>
+          <button class="add-proj-btn" data-addp="${client.id}"><i class="fa-solid fa-plus"></i> Adicionar Projeto</button>
+        </div>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+
+  // events
+  list.querySelectorAll('.client-header').forEach(h => {
+    h.addEventListener('click', e => {
+      if (e.target.closest('.check-circle')||e.target.closest('.del-proj-btn')||e.target.closest('.client-menu-btn')) return;
+      const cid = +h.dataset.cid;
+      const c = DB.clients.find(x=>x.id===cid);
+      c.open = !c.open; save(); render();
+    });
+  });
+
+  // menu button
+  list.querySelectorAll('.client-menu-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const cid = +btn.dataset.menu;
+      openCtxMenu(cid);
+    });
+  });
+
+  list.querySelectorAll('.check-circle').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const cid = +btn.dataset.cid, pid = +btn.dataset.toggle;
+      const c = DB.clients.find(x=>x.id===cid);
+      const p = c&&c.projects.find(x=>x.id===pid);
+      if (p) {
+        p.paid = !p.paid;
+        showToast(p.paid ? `${p.name} marcado como pago!` : `${p.name} marcado como pendente`);
+        save(); render();
+      }
+    });
+  });
+
+  list.querySelectorAll('[data-delp]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const cid = +btn.dataset.cid, pid = +btn.dataset.delp;
+      const c = DB.clients.find(x=>x.id===cid);
+      if (c) { c.projects = c.projects.filter(p=>p.id!==pid); save(); render(); }
+    });
+  });
+
+  list.querySelectorAll('[data-addp]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cid = +btn.dataset.addp;
+      const nameEl = document.getElementById('pn-'+cid);
+      const valEl = document.getElementById('pv-'+cid);
+      const name = nameEl.value.trim();
+      const value = parseFloat(valEl.value);
+      if (!name || isNaN(value) || value <= 0) { nameEl.focus(); nameEl.style.borderColor='var(--red)'; setTimeout(()=>nameEl.style.borderColor='',1000); return; }
+      const c = DB.clients.find(x=>x.id===cid);
+      c.projects.push({ id: DB.nextPid++, name, value, paid: false });
+      nameEl.value=''; valEl.value='';
+      showToast(`Projeto "${name}" adicionado!`);
+      save(); render();
+    });
+  });
+
+  DB.clients.forEach(c => {
+    const valEl = document.getElementById('pv-'+c.id);
+    if (valEl) valEl.addEventListener('keydown', e => {
+      if (e.key==='Enter') document.querySelector(`[data-addp="${c.id}"]`)?.click();
+    });
+  });
+}
+
+// FILTER TABS
+document.getElementById('filter-tabs').addEventListener('click', e => {
+  const tab = e.target.closest('.filter-tab');
+  if (!tab) return;
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  render();
+});
+
+// CONTEXT MENU
+let ctxClientId = null;
+const ctxMenu = document.getElementById('ctx-menu');
+
+function openCtxMenu(cid) {
+  ctxClientId = cid;
+  const c = DB.clients.find(x=>x.id===cid);
+  const s = clientStats(c);
+  document.getElementById('ctx-avatar').textContent = initials(c.name);
+  document.getElementById('ctx-name').textContent = c.name;
+  document.getElementById('ctx-sub').textContent = `${s.count} projeto${s.count!==1?'s':''} · ${fmt(s.pending)} pendente`;
+  ctxMenu.classList.add('open');
+}
+function closeCtxMenu() { ctxMenu.classList.remove('open'); ctxClientId = null; }
+
+ctxMenu.addEventListener('click', e => { if (e.target===ctxMenu) closeCtxMenu(); });
+document.getElementById('ctx-cancel').addEventListener('click', closeCtxMenu);
+
+// EDIT via context menu
+document.getElementById('ctx-edit').addEventListener('click', () => {
+  closeCtxMenu();
+  const c = DB.clients.find(x=>x.id===ctxClientId) || DB.clients.find(x=>x.id===ctxClientId);
+  // ctxClientId was already set before closing, grab from temp
+  const cid = ctxClientId !== null ? ctxClientId : null;
+  setTimeout(() => {
+    const client = DB.clients.find(x=>x.id===cid||x.id===(ctxClientId));
+    openEditModal(cid || ctxClientId);
+  }, 50);
+});
+
+// smoother: track separately
+let _editCid = null;
+document.getElementById('ctx-edit').addEventListener('click', () => {
+  _editCid = ctxClientId;
+  closeCtxMenu();
+  setTimeout(() => openEditModal(_editCid), 180);
+}, { capture: true });
+
+document.getElementById('ctx-delete').addEventListener('click', () => {
+  const cid = ctxClientId;
+  closeCtxMenu();
+  setTimeout(() => {
+    const c = DB.clients.find(x=>x.id===cid);
+    if (!c) return;
+    if (confirm(`Excluir "${c.name}" e todos os ${c.projects.length} projeto(s)?`)) {
+      DB.clients = DB.clients.filter(x=>x.id!==cid);
+      save(); render();
+      showToast(`${c.name} excluído`);
+    }
+  }, 180);
+});
+
+// EDIT MODAL
+const modalEditClient = document.getElementById('modal-edit-client');
+
+function openEditModal(cid) {
+  const c = DB.clients.find(x=>x.id===cid);
+  if (!c) return;
+  _editCid = cid;
+  document.getElementById('inp-edit-name').value = c.name;
+  modalEditClient.classList.add('open');
+  setTimeout(() => document.getElementById('inp-edit-name').focus(), 300);
+}
+
+document.getElementById('cancel-edit-client').addEventListener('click', () => {
+  modalEditClient.classList.remove('open');
+});
+modalEditClient.addEventListener('click', e => {
+  if (e.target === modalEditClient) modalEditClient.classList.remove('open');
+});
+document.getElementById('confirm-edit-client').addEventListener('click', () => {
+  const name = document.getElementById('inp-edit-name').value.trim();
+  if (!name) return;
+  const c = DB.clients.find(x=>x.id===_editCid);
+  if (c) {
+    const old = c.name;
+    c.name = name;
+    save(); render();
+    showToast(`Nome atualizado para "${name}"`);
+  }
+  modalEditClient.classList.remove('open');
+});
+document.getElementById('inp-edit-name').addEventListener('keydown', e => {
+  if (e.key==='Enter') document.getElementById('confirm-edit-client').click();
+});
+document.getElementById('btn-add-client').addEventListener('click', () => {
+  modalClient.classList.add('open');
+  setTimeout(()=>document.getElementById('inp-client-name').focus(), 300);
+});
+document.getElementById('cancel-client').addEventListener('click', () => {
+  modalClient.classList.remove('open');
+  document.getElementById('inp-client-name').value='';
+});
+modalClient.addEventListener('click', e => { if(e.target===modalClient) { modalClient.classList.remove('open'); document.getElementById('inp-client-name').value=''; }});
+document.getElementById('confirm-client').addEventListener('click', () => {
+  const name = document.getElementById('inp-client-name').value.trim();
+  if (!name) return;
+  DB.clients.push({ id: DB.nextCid++, name, open: true, projects: [] });
+  save(); render();
+  modalClient.classList.remove('open');
+  document.getElementById('inp-client-name').value='';
+  showToast(`Cliente "${name}" adicionado!`);
+});
+document.getElementById('inp-client-name').addEventListener('keydown', e => {
+  if (e.key==='Enter') document.getElementById('confirm-client').click();
+});
+
+// MODAL REPORT
+const modalReport = document.getElementById('modal-report');
+
+function buildReport() {
+  const {pending, received, total} = calcTotals();
+  const totalClients = DB.clients.length;
+  const totalProj = DB.clients.reduce((s,c)=>s+c.projects.length,0);
+  const paidProj = DB.clients.reduce((s,c)=>s+c.projects.filter(p=>p.paid).length,0);
+  const pct = total > 0 ? Math.round((received/total)*100) : 0;
+  const allPaidClients = DB.clients.filter(c=>c.projects.length>0&&c.projects.every(p=>p.paid));
+  const pendingClients = DB.clients.filter(c=>c.projects.some(p=>!p.paid));
+  const body = document.getElementById('report-body');
+  body.innerHTML = `
+    <div class="big-stat-row">
+      <div class="big-stat"><div class="big-stat-val">${totalClients}</div><div class="big-stat-lbl">Clientes</div></div>
+      <div class="big-stat"><div class="big-stat-val">${totalProj}</div><div class="big-stat-lbl">Projetos</div></div>
+      <div class="big-stat"><div class="big-stat-val">${pct}%</div><div class="big-stat-lbl">Recebido</div></div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Progresso de recebimentos</span><span style="color:var(--green);font-weight:600">${pct}%</span></div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="report-section">
+      <div class="report-section-title"><i class="fa-solid fa-wallet" style="color:var(--amber)"></i> Resumo financeiro</div>
+      <div class="report-row">
+        <div class="report-row-left"><i class="fa-solid fa-circle-dot" style="color:var(--amber);font-size:15px"></i><div><div style="font-size:13px;color:var(--text)">A receber</div><div style="font-size:11px;color:var(--text3)">${totalProj-paidProj} projeto${totalProj-paidProj!==1?'s':''} pendente${totalProj-paidProj!==1?'s':''}</div></div></div>
+        <div class="report-val amber">${fmt(pending)}</div>
+      </div>
+      <div class="report-row">
+        <div class="report-row-left"><i class="fa-solid fa-circle-check" style="color:var(--green);font-size:15px"></i><div><div style="font-size:13px;color:var(--text)">Recebido</div><div style="font-size:11px;color:var(--text3)">${paidProj} projeto${paidProj!==1?'s':''} pago${paidProj!==1?'s':''}</div></div></div>
+        <div class="report-val green">${fmt(received)}</div>
+      </div>
+      <div class="report-row" style="border-color:var(--border2)">
+        <div class="report-row-left"><i class="fa-solid fa-sigma" style="color:var(--accent2);font-size:15px"></i><div><div style="font-size:13px;color:var(--text);font-weight:600">Total geral</div></div></div>
+        <div class="report-val" style="color:var(--text)">${fmt(total)}</div>
+      </div>
+    </div>
+    ${pendingClients.length>0?`<div class="report-section">
+      <div class="report-section-title"><i class="fa-solid fa-clock" style="color:var(--amber)"></i> Clientes com pendências</div>
+      ${pendingClients.map(c=>{const s=clientStats(c);const pc=c.projects.filter(p=>!p.paid).length;return`<div class="report-row"><div class="report-row-left"><div class="report-avatar">${initials(c.name)}</div><div><div class="report-client-name">${c.name}</div><div class="report-client-sub">${pc} projeto${pc!==1?'s':''} pendente${pc!==1?'s':''}</div></div></div><div class="report-val amber">${fmt(s.pending)}</div></div>`;}).join('')}
+    </div>`:''}
+    ${allPaidClients.length>0?`<div class="report-section">
+      <div class="report-section-title"><i class="fa-solid fa-trophy" style="color:var(--green)"></i> Totalmente pagos</div>
+      ${allPaidClients.map(c=>{const s=clientStats(c);return`<div class="report-row" style="border-color:var(--green-border)"><div class="report-row-left"><div class="report-avatar" style="background:var(--green-bg);border-color:var(--green-border);color:var(--green)">${initials(c.name)}</div><div><div class="report-client-name">${c.name}</div><div class="report-client-sub">${c.projects.length} projeto${c.projects.length!==1?'s':''} · tudo pago</div></div></div><div class="report-val green">${fmt(s.total)}</div></div>`;}).join('')}
+    </div>`:''}
+    ${totalProj===0?`<div style="text-align:center;padding:32px 0;color:var(--text3);font-size:14px"><i class="fa-solid fa-chart-bar" style="font-size:32px;display:block;margin-bottom:12px;opacity:0.3"></i>Nenhum dado ainda.<br>Adicione clientes e projetos.</div>`:''}
+    <button class="btn-ghost" style="width:100%;margin-top:4px" onclick="document.getElementById('modal-report').classList.remove('open');document.getElementById('btn-report').classList.remove('active')">
+      <i class="fa-solid fa-xmark" style="margin-right:6px"></i> Fechar relatório
+    </button>
+  `;
+}
+
+document.getElementById('btn-report').addEventListener('click', () => {
+  buildReport();
+  modalReport.classList.add('open');
+  document.getElementById('btn-report').classList.add('active');
+});
+modalReport.addEventListener('click', e => {
+  if (e.target===modalReport) { modalReport.classList.remove('open'); document.getElementById('btn-report').classList.remove('active'); }
+});
+
+render();
+</script>
+</body>
+</html>
